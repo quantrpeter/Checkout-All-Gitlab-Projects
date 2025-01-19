@@ -23,8 +23,17 @@ for f in listdir(args.dir):
 		print(f)
 		temp=os.popen("cd "+args.dir+'/'+f+"; git remote show origin | grep Push").read()
 		temp=temp.split("URL:")[1].strip()
-		if "https://gitlab.com" in temp:
-			newUrl=temp.replace("gitlab.com", "gitlab.quantr.hk")
+		newUrl=temp
+		if "gitlab.quantr.hk" in newUrl:
+			continue
+		if "https://peter%40quantr.hk@gitlab.com" in newUrl:
+			newUrl=newUrl.replace("peter%40quantr.hk@gitlab.com", "gitlab.quantr.hk")
+		if "https://gitlab.com" in newUrl:
+			newUrl=newUrl.replace("gitlab.com", "gitlab.quantr.hk")
+		if "peter-example" in newUrl:
+			newUrl=newUrl.replace("peter-example", "example")
+
+		if newUrl!=None and "gitlab" in newUrl:
 			print(temp+" > "+newUrl)
-			print("cd "+args.dir+'/'+f+"; git remote set-url origin "+newUrl)
+			print("   cd "+args.dir+'/'+f+"; git remote set-url origin "+newUrl)
 			os.popen("cd "+args.dir+'/'+f+"; git remote set-url origin "+newUrl).read()
